@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#5a3bd6" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="刷房看板" />
+    <title>酒店积分看板</title>
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="主导航">
+        <div class="brand">
+          <div class="brand-mark">H</div>
+          <div>
+            <p class="brand-kicker">Hotel Points</p>
+            <h1>刷房看板</h1>
+          </div>
+        </div>
+
+        <nav class="nav-list">
+          <a class="nav-item active" href="#overview">总览</a>
+          <a class="nav-item" href="#stays">房晚记录</a>
+        </nav>
+
+        <section class="side-panel">
+          <p class="panel-label">年度目标</p>
+          <div class="goal-row">
+            <span>万豪白金保级</span>
+            <strong>50 晚</strong>
+          </div>
+          <div class="goal-row">
+            <span>凯悦探索者</span>
+            <strong>还差 9 晚</strong>
+          </div>
+          <div class="goal-row">
+            <span>凯悦环球客</span>
+            <strong>还差 59 晚</strong>
+          </div>
+        </section>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">2026 会员年度</p>
+            <h2>年度刷房足迹</h2>
+          </div>
+          <div class="top-actions" role="group" aria-label="筛选酒店集团">
+            <button class="filter-button active" type="button" data-program="all">全部</button>
+            <button class="filter-button" type="button" data-program="marriott">万豪</button>
+            <button class="filter-button" type="button" data-program="hyatt">凯悦</button>
+          </div>
+        </header>
+
+        <section id="overview" class="overview-grid" aria-label="核心指标">
+          <article class="metric-card program-card accent-marriott">
+            <div class="program-top">
+              <div class="program-title">
+                <span class="brand-logo-frame marriott-logo-frame">
+                  <img
+                    class="brand-logo marriott-logo"
+                    src="https://wellington-studio.com/wp-content/uploads/2025/02/marriott_bonvoy_logo.svg"
+                    alt="Marriott Bonvoy"
+                  />
+                </span>
+                <div>
+                  <p class="panel-label">Marriott Bonvoy</p>
+                  <h3>万豪</h3>
+                </div>
+              </div>
+              <span class="status-pill" id="marriottStatus">未设置</span>
+            </div>
+
+            <div class="program-body">
+              <div>
+                <p class="metric-label">年度房晚</p>
+                <strong id="marriottNights">0 / 50</strong>
+              </div>
+              <div class="mini-copy">
+                <p id="marriottCopy">距离目标还差 0 晚</p>
+                <p class="point-value" id="marriottPointValue">积分价值 ¥0</p>
+              </div>
+            </div>
+            <div class="spend-copy">
+              已花费 <strong id="marriottSpend">¥0</strong>
+            </div>
+            <div class="progress-track"><span id="marriottProgress"></span></div>
+          </article>
+
+          <article class="metric-card program-card accent-hyatt">
+            <div class="program-top">
+              <div class="program-title">
+                <span class="brand-logo-frame hyatt-logo-frame">
+                  <img
+                    class="brand-logo hyatt-logo"
+                    src="./assets/world-of-hyatt-blue.svg"
+                    alt="World of Hyatt"
+                  />
+                </span>
+                <div>
+                  <p class="panel-label">World of Hyatt</p>
+                  <h3>凯悦</h3>
+                </div>
+              </div>
+              <span class="status-pill" id="hyattStatus">未设置</span>
+            </div>
+
+            <div class="program-body">
+              <div>
+                <p class="metric-label">年度房晚</p>
+            <strong id="hyattNights">0 / 60</strong>
+              </div>
+              <div class="mini-copy">
+                <p id="hyattCopy">距离目标还差 0 晚</p>
+                <p class="point-value" id="hyattPointValue">积分价值 ¥0</p>
+              </div>
+            </div>
+            <div class="spend-copy">
+              已花费 <strong id="hyattSpend">¥0</strong>
+            </div>
+            <div class="progress-track"><span id="hyattProgress"></span></div>
+          </article>
+        </section>
+
+        <section class="stays-section">
+          <article id="stays" class="panel wide">
+            <div class="panel-head">
+              <div>
+                <p class="panel-label">入住日历</p>
+                <h3>房晚记录</h3>
+              </div>
+              <div class="calendar-actions">
+                <div class="calendar-toggle" role="group" aria-label="格子显示内容">
+                  <button class="calendar-view-button active" type="button" data-calendar-view="photo">照片</button>
+                  <button class="calendar-view-button" type="button" data-calendar-view="points">积分</button>
+                </div>
+                <button class="ghost-button" type="button" id="resetData">清空记录</button>
+              </div>
+            </div>
+            <div class="calendar-legend" aria-label="状态说明">
+              <span><i class="legend-dot booked"></i>预订待入住</span>
+              <span><i class="legend-dot stayed"></i>已入住</span>
+              <span><i class="legend-dot credited"></i>已入住已积分</span>
+            </div>
+            <div class="stay-workspace">
+              <div class="calendar-column">
+                <div class="month-axis" id="monthAxis" aria-label="选择月份"></div>
+                <div class="month-calendar" id="calendarGrid" aria-label="月度房晚日历"></div>
+              </div>
+
+              <aside class="map-panel" aria-label="入住地图">
+                <div class="map-head">
+                  <div>
+                    <p class="panel-label">Stay Map</p>
+                    <h3>入住足迹</h3>
+                  </div>
+                  <span class="status-pill" id="mapCount">0 城市</span>
+                </div>
+                <div class="map-canvas">
+                  <svg class="world-map" viewBox="0 0 720 360" aria-hidden="true">
+                    <path d="M76 96 143 68 214 82 234 123 188 156 119 145 72 126Z" />
+                    <path d="M205 176 251 189 270 238 238 305 194 274 181 219Z" />
+                    <path d="M317 88 384 72 444 93 432 136 357 137 312 118Z" />
+                    <path d="M425 143 486 132 548 160 529 217 459 202Z" />
+                    <path d="M527 85 626 78 681 118 646 159 562 143Z" />
+                    <path d="M558 224 636 235 666 286 611 312 552 278Z" />
+                    <path d="M323 153 374 162 391 218 359 276 319 236Z" />
+                  </svg>
+                  <div class="map-markers" id="mapMarkers"></div>
+                </div>
+                <div class="map-list" id="mapList"></div>
+                <div class="china-map-section">
+                  <div class="map-head compact">
+                    <div>
+                      <p class="panel-label">China Map</p>
+                      <h3>中国足迹</h3>
+                    </div>
+                    <span class="status-pill" id="chinaMapCount">0 城市</span>
+                  </div>
+                  <div class="china-map-canvas">
+                    <img
+                      class="china-map"
+                      src="https://upload.wikimedia.org/wikipedia/commons/f/fe/China_blank_province_map.svg"
+                      alt=""
+                    />
+                    <div class="china-map-markers" id="chinaMapMarkers"></div>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <dialog class="stay-dialog" id="stayDialog">
+      <form class="stay-editor" id="stayEditor" method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="panel-label">房晚记录</p>
+            <h3 id="dialogDate">选择日期</h3>
+          </div>
+          <button class="icon-button" type="button" id="closeDialog" aria-label="关闭">×</button>
+        </div>
+
+        <input type="hidden" name="date" id="stayDate" />
+
+        <div class="editor-grid">
+          <label>
+            城市
+            <input name="city" type="text" placeholder="例如 上海" required />
+          </label>
+          <label>
+            酒店集团
+            <select name="program" required>
+              <option value="marriott">万豪系</option>
+              <option value="hyatt">凯悦系</option>
+            </select>
+          </label>
+          <label>
+            酒店品牌名
+            <input name="brand" type="text" placeholder="例如 万怡 / 嘉轩" required />
+          </label>
+          <label>
+            花费
+            <input name="cost" type="number" min="0" step="1" placeholder="0" required />
+          </label>
+          <label>
+            入住状态
+            <select name="status" id="stayStatus" required>
+              <option value="booked">预订待入住</option>
+              <option value="stayed">已入住</option>
+              <option value="credited">已入住已积分</option>
+            </select>
+          </label>
+          <label class="points-field">
+            积分数
+            <input name="points" type="number" min="0" step="100" placeholder="0" />
+          </label>
+        </div>
+
+        <div class="stay-detail-fields">
+          <label class="full-field">
+            入住图片
+            <input name="photos" type="file" accept="image/*" multiple />
+          </label>
+          <div class="photo-preview" id="photoPreview"></div>
+          <label class="full-field">
+            入住日志
+            <textarea name="note" rows="4" placeholder="记录入住体验、补登情况或注意事项"></textarea>
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <button class="danger-button" type="button" id="deleteStay">删除记录</button>
+          <div>
+            <button class="ghost-button" type="button" id="cancelEditor">取消</button>
+            <button class="primary-button" type="submit">保存</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

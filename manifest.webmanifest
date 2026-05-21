@@ -1,0 +1,17 @@
+{
+  "name": "酒店积分刷房看板",
+  "short_name": "刷房看板",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#faf9fd",
+  "theme_color": "#5a3bd6",
+  "description": "记录万豪和凯悦房晚、花费、积分与入住日志。",
+  "icons": [
+    {
+      "src": "./assets/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

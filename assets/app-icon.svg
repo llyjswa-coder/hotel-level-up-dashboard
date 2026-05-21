@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">刷房看板</title>
+  <rect width="512" height="512" rx="112" fill="#5a3bd6"/>
+  <rect x="106" y="126" width="300" height="260" rx="54" fill="#fff"/>
+  <path d="M154 205h204" stroke="#5a3bd6" stroke-width="28" stroke-linecap="round"/>
+  <path d="M154 271h140" stroke="#3b9d79" stroke-width="28" stroke-linecap="round"/>
+  <circle cx="352" cy="271" r="22" fill="#ff9a63"/>
+  <path d="M156 341h200" stroke="#d8d1ff" stroke-width="24" stroke-linecap="round"/>
+</svg>
