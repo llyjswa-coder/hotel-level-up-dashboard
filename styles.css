@@ -974,7 +974,14 @@ button {
   background: #fff;
 }
 
-.brand-tile.marriott-source .brand-logo-img {
+.brand-tile.hyatt-source {
+  min-height: 62px;
+  padding: 0;
+  background: #fff;
+}
+
+.brand-tile.marriott-source .brand-logo-img,
+.brand-tile.hyatt-source .brand-logo-img {
   width: 100%;
   height: 100%;
   max-width: none;

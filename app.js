@@ -130,8 +130,6 @@ const brandCatalog = {
     "Hyatt Studios",
     "Hyatt Select",
     "UrCove",
-    "Mr & Mrs Smith",
-    "The Venetian Resort Las Vegas",
   ],
 };
 const brandAliases = {
@@ -231,8 +229,6 @@ const brandLogoDomains = {
   "Hyatt Studios": "hyattstudios.com",
   "Hyatt Select": "hyatt.com",
   UrCove: "urcove.com",
-  "Mr & Mrs Smith": "mrandmrssmith.com",
-  "The Venetian Resort Las Vegas": "venetianlasvegas.com",
 };
 const marriottLogoFiles = {
   "The Ritz-Carlton": "ritz-carlton.png",
@@ -273,6 +269,44 @@ const marriottLogoFiles = {
   "Homes & Villas": "homes-villas.png",
   "Apartments by Marriott Bonvoy": "apartments-by-marriott.png",
   "Marriott Executive Apartments": "marriott-executive-apartments.png",
+};
+const hyattLogoFiles = {
+  "Park Hyatt": "park-hyatt.png",
+  Alila: "alila.png",
+  Miraval: "miraval.png",
+  "Impression by Secrets": "impression-by-secrets.png",
+  "The Unbound Collection by Hyatt": "unbound-collection.png",
+  Andaz: "andaz.png",
+  "Thompson Hotels": "thompson-hotels.png",
+  "The Standard": "the-standard.png",
+  "Dream Hotels": "dream-hotels.png",
+  "The StandardX": "the-standardx.png",
+  "Breathless Resorts & Spas": "breathless.png",
+  "JdV by Hyatt": "jdv-by-hyatt.png",
+  "Bunkhouse Hotels": "bunkhouse-hotels.png",
+  "Me and All Hotels": "me-and-all-hotels.png",
+  "Zoëtry Wellness & Spa Resorts": "zoetry.png",
+  "Hyatt Ziva": "hyatt-ziva.png",
+  "Hyatt Zilara": "hyatt-zilara.png",
+  "Secrets Resorts & Spas": "secrets.png",
+  "Dreams Resorts & Spas": "dreams.png",
+  "Hyatt Vivid Hotels & Resorts": "hyatt-vivid.png",
+  "Bahia Principe Hotels & Resorts": "bahia-principe.png",
+  "Alua Hotels & Resorts": "alua.png",
+  "Sunscape Resorts & Spas": "sunscape.png",
+  "Grand Hyatt": "grand-hyatt.png",
+  "Hyatt Regency": "hyatt-regency.png",
+  "Destination by Hyatt": "destination-by-hyatt.png",
+  "Hyatt Centric": "hyatt-centric.png",
+  "Hyatt Vacation Club": "hyatt-vacation-club.png",
+  Hyatt: "hyatt.png",
+  "Caption by Hyatt": "caption-by-hyatt.png",
+  "Unscripted by Hyatt": "unscripted-by-hyatt.png",
+  "Hyatt Place": "hyatt-place.png",
+  "Hyatt House": "hyatt-house.png",
+  "Hyatt Studios": "hyatt-studios.png",
+  "Hyatt Select": "hyatt-select.png",
+  UrCove: "urcove.png",
 };
 const cityCoordinates = {
   上海: [31.2304, 121.4737],
@@ -565,7 +599,7 @@ function renderBrandGroup(program, completed) {
       const isLit = completed.has(brandKey(program, brand));
       const logoSrc = brandLogoSrc(program, brand);
       return `
-        <div class="brand-tile has-logo ${program === "marriott" ? "marriott-source" : ""} ${isLit ? "is-lit" : ""}" title="${escapeHtml(brand)}">
+        <div class="brand-tile has-logo ${program === "marriott" ? "marriott-source" : "hyatt-source"} ${isLit ? "is-lit" : ""}" title="${escapeHtml(brand)}">
           <img
             class="brand-logo-img"
             src="${logoSrc}"
@@ -639,6 +673,10 @@ function brandWordmark(brand) {
 function brandLogoSrc(program, brand) {
   if (program === "marriott" && marriottLogoFiles[brand]) {
     return `./assets/marriott-logos/${marriottLogoFiles[brand]}`;
+  }
+
+  if (program === "hyatt" && hyattLogoFiles[brand]) {
+    return `./assets/hyatt-logos/${hyattLogoFiles[brand]}`;
   }
 
   return `https://logo.clearbit.com/${brandLogoDomains[brand] || "hyatt.com"}`;
