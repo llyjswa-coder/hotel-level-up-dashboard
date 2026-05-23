@@ -241,6 +241,14 @@ button {
   grid-template-columns: 1fr;
 }
 
+.overview-grid.filtered {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.is-hidden {
+  display: none !important;
+}
+
 .metric-card,
 .panel {
   border: 1px solid var(--line);

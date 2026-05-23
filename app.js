@@ -304,9 +304,20 @@ function statusClass(status) {
 }
 
 function renderAll() {
+  renderProgramVisibility();
   renderMetrics();
   renderStays();
   renderMap();
+}
+
+function renderProgramVisibility() {
+  const overview = document.querySelector("#overview");
+  overview.classList.toggle("filtered", state.filter !== "all");
+
+  document.querySelectorAll("[data-program-card]").forEach((card) => {
+    const shouldShow = state.filter === "all" || card.dataset.programCard === state.filter;
+    card.classList.toggle("is-hidden", !shouldShow);
+  });
 }
 
 document.querySelectorAll(".filter-button").forEach((button) => {
