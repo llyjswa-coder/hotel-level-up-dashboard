@@ -157,6 +157,123 @@ const brandAliases = {
   凯悦尚萃: "Hyatt Centric",
   安达仕: "Andaz",
 };
+const brandLogoDomains = {
+  "The Ritz-Carlton": "ritzcarlton.com",
+  "St. Regis": "stregis.com",
+  EDITION: "editionhotels.com",
+  "The Luxury Collection": "theluxurycollection.com",
+  "W Hotels": "whotels.com",
+  "JW Marriott": "jwmarriott.com",
+  Marriott: "marriott.com",
+  Sheraton: "sheraton.com",
+  "Marriott Vacation Club": "marriottvacationclub.com",
+  "Delta Hotels": "deltahotels.com",
+  "Le Méridien": "lemeridien.com",
+  Westin: "westin.com",
+  "Autograph Collection": "autograph-hotels.marriott.com",
+  "Design Hotels": "designhotels.com",
+  "Renaissance Hotels": "renaissance-hotels.marriott.com",
+  "Tribute Portfolio": "tributeportfolio.com",
+  "Gaylord Hotels": "gaylordhotels.com",
+  "MGM Collection": "mgmresorts.com",
+  "Outdoor Collection": "marriott.com",
+  Courtyard: "courtyard.marriott.com",
+  "Four Points": "fourpoints.com",
+  "SpringHill Suites": "springhillsuites.com",
+  "Protea Hotels": "proteahotels.com",
+  Fairfield: "fairfield.marriott.com",
+  "AC Hotels": "achotels.marriott.com",
+  citizenM: "citizenm.com",
+  "Aloft Hotels": "alofthotels.com",
+  "Moxy Hotels": "moxy-hotels.marriott.com",
+  "City Express": "cityexpress.com",
+  "Four Points Flex": "fourpointsflex.com",
+  "Series by Marriott": "marriott.com",
+  "Residence Inn": "residenceinn.marriott.com",
+  "TownePlace Suites": "towneplacesuites.com",
+  Element: "elementhotels.com",
+  StudioRes: "studiores.com",
+  "Homes & Villas": "homes-and-villas.marriott.com",
+  "Marriott Executive Apartments": "marriottexecutiveapartments.com",
+  "Park Hyatt": "parkhyatt.com",
+  Alila: "alilahotels.com",
+  Miraval: "miravalresorts.com",
+  "Impression by Secrets": "secretsresorts.com",
+  "The Unbound Collection by Hyatt": "hyatt.com",
+  Andaz: "andaz.com",
+  "Thompson Hotels": "thompsonhotels.com",
+  "The Standard": "standardhotels.com",
+  "Dream Hotels": "dreamhotels.com",
+  "The StandardX": "standardhotels.com",
+  "Breathless Resorts & Spas": "breathlessresorts.com",
+  "JdV by Hyatt": "jdvhotels.com",
+  "Bunkhouse Hotels": "bunkhousehotels.com",
+  "Me and All Hotels": "meandallhotels.com",
+  "Zoëtry Wellness & Spa Resorts": "zoetryresorts.com",
+  "Hyatt Ziva": "hyattziva.com",
+  "Hyatt Zilara": "hyattzilara.com",
+  "Secrets Resorts & Spas": "secretsresorts.com",
+  "Dreams Resorts & Spas": "dreamsresorts.com",
+  "Hyatt Vivid Hotels & Resorts": "hyattvivid.com",
+  "Bahia Principe Hotels & Resorts": "bahia-principe.com",
+  "Alua Hotels & Resorts": "aluahotels.com",
+  "Sunscape Resorts & Spas": "sunscaperesorts.com",
+  "Grand Hyatt": "grandhyatt.com",
+  "Hyatt Regency": "hyattregency.com",
+  "Destination by Hyatt": "destinationhotels.com",
+  "Hyatt Centric": "hyattcentric.com",
+  "Hyatt Vacation Club": "hyattvacationclub.com",
+  Hyatt: "hyatt.com",
+  "Caption by Hyatt": "captionbyhyatt.com",
+  "Unscripted by Hyatt": "hyatt.com",
+  "Hyatt Place": "hyattplace.com",
+  "Hyatt House": "hyatthouse.com",
+  "Hyatt Studios": "hyattstudios.com",
+  "Hyatt Select": "hyatt.com",
+  UrCove: "urcove.com",
+  "Mr & Mrs Smith": "mrandmrssmith.com",
+  "The Venetian Resort Las Vegas": "venetianlasvegas.com",
+};
+const marriottLogoFiles = {
+  "The Ritz-Carlton": "ritz-carlton.png",
+  "St. Regis": "st-regis.png",
+  EDITION: "edition.png",
+  "The Luxury Collection": "luxury-collection.png",
+  "W Hotels": "w-hotels.png",
+  "JW Marriott": "jw-marriott.png",
+  Marriott: "marriott.png",
+  Sheraton: "sheraton.png",
+  "Marriott Vacation Club": "marriott-vacation-club.png",
+  "Delta Hotels": "delta-hotels.png",
+  "Le Méridien": "le-meridien.png",
+  Westin: "westin.png",
+  "Autograph Collection": "autograph-collection.png",
+  "Design Hotels": "design-hotels.png",
+  "Renaissance Hotels": "renaissance-hotels.png",
+  "Tribute Portfolio": "tribute-portfolio.png",
+  "Gaylord Hotels": "gaylord-hotels.png",
+  "MGM Collection": "mgm-collection.png",
+  "Outdoor Collection": "outdoor-collection.png",
+  Courtyard: "courtyard.png",
+  "Four Points": "four-points.png",
+  "SpringHill Suites": "springhill-suites.png",
+  "Protea Hotels": "protea-hotels.png",
+  Fairfield: "fairfield.png",
+  "AC Hotels": "ac-hotels.png",
+  citizenM: "citizenm.png",
+  "Aloft Hotels": "aloft-hotels.png",
+  "Moxy Hotels": "moxy-hotels.png",
+  "City Express": "city-express.png",
+  "Four Points Flex": "four-points-flex.png",
+  "Series by Marriott": "series-by-marriott.png",
+  "Residence Inn": "residence-inn.png",
+  "TownePlace Suites": "towneplace-suites.png",
+  Element: "element.png",
+  StudioRes: "studiores.png",
+  "Homes & Villas": "homes-villas.png",
+  "Apartments by Marriott Bonvoy": "apartments-by-marriott.png",
+  "Marriott Executive Apartments": "marriott-executive-apartments.png",
+};
 const cityCoordinates = {
   上海: [31.2304, 121.4737],
   北京: [39.9042, 116.4074],
@@ -446,8 +563,16 @@ function renderBrandGroup(program, completed) {
   const brands = brandCatalog[program]
     .map((brand) => {
       const isLit = completed.has(brandKey(program, brand));
+      const logoSrc = brandLogoSrc(program, brand);
       return `
-        <div class="brand-tile ${isLit ? "is-lit" : ""}" title="${escapeHtml(brand)}">
+        <div class="brand-tile has-logo ${program === "marriott" ? "marriott-source" : ""} ${isLit ? "is-lit" : ""}" title="${escapeHtml(brand)}">
+          <img
+            class="brand-logo-img"
+            src="${logoSrc}"
+            alt="${escapeHtml(brand)}"
+            loading="lazy"
+            onerror="this.closest('.brand-tile').classList.add('logo-failed'); this.remove();"
+          />
           <span class="brand-wordmark">${brandWordmark(brand)}</span>
         </div>
       `;
@@ -509,6 +634,14 @@ function brandWordmark(brand) {
   const [first, ...rest] = brand.split(" ");
   if (brand.length <= 14) return escapeHtml(brand);
   return `${escapeHtml(first)}<small>${escapeHtml(rest.join(" "))}</small>`;
+}
+
+function brandLogoSrc(program, brand) {
+  if (program === "marriott" && marriottLogoFiles[brand]) {
+    return `./assets/marriott-logos/${marriottLogoFiles[brand]}`;
+  }
+
+  return `https://logo.clearbit.com/${brandLogoDomains[brand] || "hyatt.com"}`;
 }
 
 function renderBrandOptions() {
