@@ -24,6 +24,7 @@
         <nav class="nav-list">
           <a class="nav-item active" href="#overview">总览</a>
           <a class="nav-item" href="#stays">房晚记录</a>
+          <a class="nav-item" href="#brands">品牌天地</a>
         </nav>
 
         <section class="side-panel">
@@ -194,6 +195,17 @@
             </div>
           </article>
         </section>
+
+        <section id="brands" class="panel brand-section">
+          <div class="panel-head">
+            <div>
+              <p class="panel-label">Brand Universe</p>
+              <h3>品牌天地</h3>
+            </div>
+            <span class="status-pill" id="brandProgress">0 / 0 点亮</span>
+          </div>
+          <div class="brand-groups" id="brandGroups"></div>
+        </section>
       </main>
     </div>
 
@@ -223,7 +235,7 @@
           </label>
           <label>
             酒店品牌名
-            <input name="brand" type="text" placeholder="例如 万怡 / 嘉轩" required />
+            <input name="brand" type="text" list="brandOptions" placeholder="例如 Courtyard / Hyatt Place" required />
           </label>
           <label>
             花费
@@ -242,6 +254,7 @@
             <input name="points" type="number" min="0" step="100" placeholder="0" />
           </label>
         </div>
+        <datalist id="brandOptions"></datalist>
 
         <div class="stay-detail-fields">
           <label class="full-field">

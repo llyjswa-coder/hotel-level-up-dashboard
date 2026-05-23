@@ -52,6 +52,111 @@ const statusLabel = {
 };
 
 const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+const brandCatalog = {
+  marriott: [
+    "The Ritz-Carlton",
+    "St. Regis",
+    "EDITION",
+    "The Luxury Collection",
+    "W Hotels",
+    "JW Marriott",
+    "Marriott",
+    "Sheraton",
+    "Marriott Vacation Club",
+    "Delta Hotels",
+    "Le Méridien",
+    "Westin",
+    "Autograph Collection",
+    "Design Hotels",
+    "Renaissance Hotels",
+    "Tribute Portfolio",
+    "Gaylord Hotels",
+    "MGM Collection",
+    "Outdoor Collection",
+    "Courtyard",
+    "Four Points",
+    "SpringHill Suites",
+    "Protea Hotels",
+    "Fairfield",
+    "AC Hotels",
+    "citizenM",
+    "Aloft Hotels",
+    "Moxy Hotels",
+    "City Express",
+    "Four Points Flex",
+    "Series by Marriott",
+    "Residence Inn",
+    "TownePlace Suites",
+    "Element",
+    "StudioRes",
+    "Homes & Villas",
+    "Apartments by Marriott Bonvoy",
+    "Marriott Executive Apartments",
+  ],
+  hyatt: [
+    "Park Hyatt",
+    "Alila",
+    "Miraval",
+    "Impression by Secrets",
+    "The Unbound Collection by Hyatt",
+    "Andaz",
+    "Thompson Hotels",
+    "The Standard",
+    "Dream Hotels",
+    "The StandardX",
+    "Breathless Resorts & Spas",
+    "JdV by Hyatt",
+    "Bunkhouse Hotels",
+    "Me and All Hotels",
+    "Zoëtry Wellness & Spa Resorts",
+    "Hyatt Ziva",
+    "Hyatt Zilara",
+    "Secrets Resorts & Spas",
+    "Dreams Resorts & Spas",
+    "Hyatt Vivid Hotels & Resorts",
+    "Bahia Principe Hotels & Resorts",
+    "Alua Hotels & Resorts",
+    "Sunscape Resorts & Spas",
+    "Grand Hyatt",
+    "Hyatt Regency",
+    "Destination by Hyatt",
+    "Hyatt Centric",
+    "Hyatt Vacation Club",
+    "Hyatt",
+    "Caption by Hyatt",
+    "Unscripted by Hyatt",
+    "Hyatt Place",
+    "Hyatt House",
+    "Hyatt Studios",
+    "Hyatt Select",
+    "UrCove",
+    "Mr & Mrs Smith",
+    "The Venetian Resort Las Vegas",
+  ],
+};
+const brandAliases = {
+  万怡: "Courtyard",
+  喜来登: "Sheraton",
+  威斯汀: "Westin",
+  万豪: "Marriott",
+  瑞吉: "St. Regis",
+  丽思卡尔顿: "The Ritz-Carlton",
+  艾迪逊: "EDITION",
+  艾美: "Le Méridien",
+  万枫: "Fairfield",
+  雅乐轩: "Aloft Hotels",
+  源宿: "Element",
+  福朋: "Four Points",
+  凯悦嘉轩: "Hyatt Place",
+  嘉轩: "Hyatt Place",
+  凯悦嘉寓: "Hyatt House",
+  嘉寓: "Hyatt House",
+  柏悦: "Park Hyatt",
+  君悦: "Grand Hyatt",
+  凯悦: "Hyatt",
+  凯悦尚萃: "Hyatt Centric",
+  安达仕: "Andaz",
+};
 const cityCoordinates = {
   上海: [31.2304, 121.4737],
   北京: [39.9042, 116.4074],
@@ -308,6 +413,8 @@ function renderAll() {
   renderMetrics();
   renderStays();
   renderMap();
+  renderBrands();
+  renderBrandOptions();
 }
 
 function renderProgramVisibility() {
@@ -318,6 +425,97 @@ function renderProgramVisibility() {
     const shouldShow = state.filter === "all" || card.dataset.programCard === state.filter;
     card.classList.toggle("is-hidden", !shouldShow);
   });
+}
+
+function renderBrands() {
+  const completed = completedBrandKeys();
+  const visiblePrograms = state.filter === "all" ? ["marriott", "hyatt"] : [state.filter];
+  const totalVisible = visiblePrograms.reduce((sum, program) => sum + brandCatalog[program].length, 0);
+  const completedVisible = visiblePrograms.reduce(
+    (sum, program) => sum + brandCatalog[program].filter((brand) => completed.has(brandKey(program, brand))).length,
+    0,
+  );
+
+  document.querySelector("#brandProgress").textContent = `${completedVisible} / ${totalVisible} 点亮`;
+  document.querySelector("#brandGroups").innerHTML = visiblePrograms
+    .map((program) => renderBrandGroup(program, completed))
+    .join("");
+}
+
+function renderBrandGroup(program, completed) {
+  const brands = brandCatalog[program]
+    .map((brand) => {
+      const isLit = completed.has(brandKey(program, brand));
+      return `
+        <div class="brand-tile ${isLit ? "is-lit" : ""}" title="${escapeHtml(brand)}">
+          <span class="brand-wordmark">${brandWordmark(brand)}</span>
+        </div>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="brand-group ${program}">
+      <div class="brand-group-head">
+        <h4>${goals[program].label}系</h4>
+        <span>${brandCatalog[program].filter((brand) => completed.has(brandKey(program, brand))).length} / ${brandCatalog[program].length}</span>
+      </div>
+      <div class="brand-grid">${brands}</div>
+    </section>
+  `;
+}
+
+function completedBrandKeys() {
+  return new Set(
+    state.stays
+      .filter((stay) => stay.program && stay.brand && stayCountsAsNight(stay))
+      .map((stay) => {
+        const canonical = canonicalBrand(stay.program, stay.brand);
+        return canonical ? brandKey(stay.program, canonical) : null;
+      })
+      .filter(Boolean),
+  );
+}
+
+function canonicalBrand(program, value) {
+  const raw = String(value || "").trim();
+  if (!raw) return "";
+  const normalized = normalizeBrand(raw);
+  const aliased = brandAliases[raw] || brandAliases[normalized];
+  if (aliased) return aliased;
+
+  const exact = brandCatalog[program].find((brand) => normalized === normalizeBrand(brand));
+  if (exact) return exact;
+
+  return [...brandCatalog[program]]
+    .sort((a, b) => normalizeBrand(b).length - normalizeBrand(a).length)
+    .find((brand) => {
+      const brandNormalized = normalizeBrand(brand);
+      return normalized.includes(brandNormalized) || brandNormalized.includes(normalized);
+    });
+}
+
+function normalizeBrand(value) {
+  return String(value)
+    .toLowerCase()
+    .replace(/酒店|度假村|公寓|by marriott|by hyatt|hotels|hotel|resorts|resort|and|&|\s|\.|,|®|™|-/g, "");
+}
+
+function brandKey(program, brand) {
+  return `${program}:${normalizeBrand(brand)}`;
+}
+
+function brandWordmark(brand) {
+  const [first, ...rest] = brand.split(" ");
+  if (brand.length <= 14) return escapeHtml(brand);
+  return `${escapeHtml(first)}<small>${escapeHtml(rest.join(" "))}</small>`;
+}
+
+function renderBrandOptions() {
+  document.querySelector("#brandOptions").innerHTML = Object.values(brandCatalog)
+    .flat()
+    .map((brand) => `<option value="${escapeHtml(brand)}"></option>`)
+    .join("");
 }
 
 document.querySelectorAll(".filter-button").forEach((button) => {
