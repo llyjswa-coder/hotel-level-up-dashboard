@@ -939,7 +939,7 @@ button {
 
 .brand-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
   gap: 10px;
 }
 
@@ -975,18 +975,79 @@ button {
 }
 
 .brand-tile.hyatt-source {
-  min-height: 62px;
-  padding: 0;
+  min-height: 76px;
+  padding: 12px 14px;
   background: #fff;
 }
 
-.brand-tile.marriott-source .brand-logo-img,
-.brand-tile.hyatt-source .brand-logo-img {
+.brand-tile.marriott-source .brand-logo-img {
   width: 100%;
   height: 100%;
   max-width: none;
   max-height: none;
   object-fit: cover;
+}
+
+.brand-tile.hyatt-source .brand-logo-img {
+  width: 100%;
+  height: 52px;
+  max-width: 118px;
+  max-height: 52px;
+  object-fit: contain;
+}
+
+.hyatt-brand-board {
+  overflow: hidden;
+  border: 1px solid rgba(0, 114, 206, 0.24);
+  border-radius: 8px;
+  background: #fff;
+}
+
+.hyatt-brand-row {
+  display: grid;
+  grid-template-columns: 82px 1fr;
+  min-height: 76px;
+  border-bottom: 1px solid rgba(0, 114, 206, 0.26);
+}
+
+.hyatt-brand-row:last-child {
+  border-bottom: 0;
+}
+
+.hyatt-brand-row-label {
+  display: flex;
+  align-items: center;
+  padding: 0 10px 0 14px;
+  color: #0072ce;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.hyatt-brand-row-logos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(74px, 1fr));
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+}
+
+.hyatt-brand-board .brand-tile {
+  min-height: 54px;
+  padding: 4px 6px;
+  border-color: transparent;
+  background: transparent;
+}
+
+.hyatt-brand-board .brand-tile.hyatt-source .brand-logo-img {
+  height: 42px;
+  max-width: 100%;
+  max-height: 42px;
+}
+
+.hyatt-brand-board .brand-tile.is-lit {
+  border-color: rgba(0, 114, 206, 0.36);
+  background: rgba(0, 114, 206, 0.06);
+  box-shadow: none;
 }
 
 .brand-tile.has-logo .brand-wordmark {
@@ -1330,6 +1391,19 @@ tbody tr:hover {
 
   .map-panel {
     position: static;
+  }
+
+  .hyatt-brand-row {
+    grid-template-columns: 1fr;
+  }
+
+  .hyatt-brand-row-label {
+    padding: 12px 14px 0;
+  }
+
+  .hyatt-brand-row-logos {
+    grid-template-columns: repeat(auto-fit, minmax(86px, 1fr));
+    padding-top: 8px;
   }
 }
 

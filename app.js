@@ -132,6 +132,69 @@ const brandCatalog = {
     "UrCove",
   ],
 };
+const hyattBrandRows = [
+  {
+    label: "奢华精品",
+    brands: [
+      "Park Hyatt",
+      "Alila",
+      "Miraval",
+      "Impression by Secrets",
+      "The Unbound Collection by Hyatt",
+    ],
+  },
+  {
+    label: "生活方式",
+    brands: [
+      "Andaz",
+      "Thompson Hotels",
+      "The Standard",
+      "Dream Hotels",
+      "The StandardX",
+      "Breathless Resorts & Spas",
+      "JdV by Hyatt",
+      "Bunkhouse Hotels",
+      "Me and All Hotels",
+    ],
+  },
+  {
+    label: "畅享度假",
+    brands: [
+      "Zoëtry Wellness & Spa Resorts",
+      "Hyatt Ziva",
+      "Hyatt Zilara",
+      "Secrets Resorts & Spas",
+      "Dreams Resorts & Spas",
+      "Hyatt Vivid Hotels & Resorts",
+      "Bahia Principe Hotels & Resorts",
+      "Alua Hotels & Resorts",
+      "Sunscape Resorts & Spas",
+    ],
+  },
+  {
+    label: "经典风范",
+    brands: [
+      "Grand Hyatt",
+      "Hyatt Regency",
+      "Destination by Hyatt",
+      "Hyatt Centric",
+      "Hyatt Vacation Club",
+      "Hyatt",
+    ],
+  },
+  {
+    label: "精选品质",
+    brands: [
+      "Caption by Hyatt",
+      "Unscripted by Hyatt",
+      "Hyatt Place",
+      "Hyatt House",
+      "Hyatt Studios",
+      "Hyatt Select",
+      "UrCove",
+    ],
+  },
+];
 const brandAliases = {
   万怡: "Courtyard",
   喜来登: "Sheraton",
@@ -594,6 +657,8 @@ function renderBrands() {
 }
 
 function renderBrandGroup(program, completed) {
+  if (program === "hyatt") return renderHyattBrandGroup(completed);
+
   const brands = brandCatalog[program]
     .map((brand) => {
       const isLit = completed.has(brandKey(program, brand));
@@ -620,6 +685,47 @@ function renderBrandGroup(program, completed) {
         <span>${brandCatalog[program].filter((brand) => completed.has(brandKey(program, brand))).length} / ${brandCatalog[program].length}</span>
       </div>
       <div class="brand-grid">${brands}</div>
+    </section>
+  `;
+}
+
+function renderHyattBrandGroup(completed) {
+  const rows = hyattBrandRows
+    .map((row) => {
+      const brands = row.brands
+        .map((brand) => {
+          const isLit = completed.has(brandKey("hyatt", brand));
+          return `
+            <div class="brand-tile has-logo hyatt-source ${isLit ? "is-lit" : ""}" title="${escapeHtml(brand)}">
+              <img
+                class="brand-logo-img"
+                src="${brandLogoSrc("hyatt", brand)}"
+                alt="${escapeHtml(brand)}"
+                loading="lazy"
+                onerror="this.closest('.brand-tile').classList.add('logo-failed'); this.remove();"
+              />
+              <span class="brand-wordmark">${brandWordmark(brand)}</span>
+            </div>
+          `;
+        })
+        .join("");
+
+      return `
+        <div class="hyatt-brand-row">
+          <div class="hyatt-brand-row-label">${row.label}</div>
+          <div class="hyatt-brand-row-logos">${brands}</div>
+        </div>
+      `;
+    })
+    .join("");
+
+  return `
+    <section class="brand-group hyatt">
+      <div class="brand-group-head">
+        <h4>${goals.hyatt.label}系</h4>
+        <span>${brandCatalog.hyatt.filter((brand) => completed.has(brandKey("hyatt", brand))).length} / ${brandCatalog.hyatt.length}</span>
+      </div>
+      <div class="hyatt-brand-board">${rows}</div>
     </section>
   `;
 }
