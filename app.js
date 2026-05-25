@@ -25,6 +25,13 @@ const goals = {
 const activeYear = 2026;
 const emptyStays = [];
 const emptyPromos = [];
+const memberSettings = loadObject("hotel-dashboard-v2-member-settings", {
+  marriottLevel: "未设置",
+  hyattLevel: "未设置",
+});
+
+goals.marriott.level = memberSettings.marriottLevel;
+goals.hyatt.level = memberSettings.hyattLevel;
 
 const state = {
   filter: "all",
@@ -446,6 +453,16 @@ function load(key, fallback) {
   }
 }
 
+function loadObject(key, fallback) {
+  const raw = localStorage.getItem(key);
+  if (!raw) return { ...fallback };
+  try {
+    return { ...fallback, ...JSON.parse(raw) };
+  } catch {
+    return { ...fallback };
+  }
+}
+
 function cloneData(data) {
   return data.map((item) => ({ ...item }));
 }
@@ -461,6 +478,10 @@ function escapeHtml(value) {
 
 function save() {
   localStorage.setItem("hotel-dashboard-v2-stays", JSON.stringify(state.stays));
+}
+
+function saveMemberSettings() {
+  localStorage.setItem("hotel-dashboard-v2-member-settings", JSON.stringify(memberSettings));
 }
 
 function visibleStays() {
@@ -847,7 +868,7 @@ function buildNotionBackup({ includePhotos = false } = {}) {
     ...brandRows.flatMap((section) => [section, ""]),
     "## 原始数据备份",
     "```json",
-    JSON.stringify({ activeYear, stays: portableStays }, null, 2),
+    JSON.stringify({ activeYear, memberSettings, stays: portableStays }, null, 2),
     "```",
   ].join("\n");
 }
@@ -936,7 +957,7 @@ function buildNotionHtmlBackup() {
 
     <section>
       <h2>原始数据备份</h2>
-      <pre>${escapeHtml(JSON.stringify({ activeYear, stays: state.stays }, null, 2))}</pre>
+      <pre>${escapeHtml(JSON.stringify({ activeYear, memberSettings, stays: state.stays }, null, 2))}</pre>
     </section>
   </body>
 </html>`;
@@ -1052,6 +1073,11 @@ document.querySelector("#monthAxis").addEventListener("click", (event) => {
 document.querySelector("#stayStatus").addEventListener("change", updateEditorFields);
 document.querySelector("#closeDialog").addEventListener("click", closeStayEditor);
 document.querySelector("#cancelEditor").addEventListener("click", closeStayEditor);
+document.querySelectorAll("[data-open-member-settings]").forEach((button) => {
+  button.addEventListener("click", openMemberSettings);
+});
+document.querySelector("#closeMemberDialog").addEventListener("click", closeMemberSettings);
+document.querySelector("#cancelMemberSettings").addEventListener("click", closeMemberSettings);
 
 document.querySelector("#deleteStay").addEventListener("click", () => {
   if (!state.editingDate) return;
@@ -1127,6 +1153,29 @@ document.querySelector("#exportNotion").addEventListener("click", async () => {
 });
 
 renderAll();
+
+document.querySelector("#memberSettingsForm").addEventListener("submit", (event) => {
+  event.preventDefault();
+  const formData = new FormData(event.currentTarget);
+  memberSettings.marriottLevel = formData.get("marriottLevel") || "未设置";
+  memberSettings.hyattLevel = formData.get("hyattLevel") || "未设置";
+  goals.marriott.level = memberSettings.marriottLevel;
+  goals.hyatt.level = memberSettings.hyattLevel;
+  saveMemberSettings();
+  closeMemberSettings();
+  renderAll();
+});
+
+function openMemberSettings() {
+  const form = document.querySelector("#memberSettingsForm");
+  form.elements.marriottLevel.value = goals.marriott.level;
+  form.elements.hyattLevel.value = goals.hyatt.level;
+  document.querySelector("#memberDialog").showModal();
+}
+
+function closeMemberSettings() {
+  document.querySelector("#memberDialog").close();
+}
 
 function renderMap() {
   const markers = document.querySelector("#mapMarkers");

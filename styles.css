@@ -413,6 +413,16 @@ button {
   white-space: nowrap;
 }
 
+.status-button {
+  border: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.status-button:hover {
+  background: rgba(91, 59, 214, 0.15);
+}
+
 .accent-marriott {
   border-color: #eee7ff;
   background: linear-gradient(160deg, #fbf9ff 0%, #ffffff 62%);
@@ -1178,6 +1188,10 @@ button {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
   margin-top: 20px;
+}
+
+.compact-editor-grid {
+  margin-bottom: 20px;
 }
 
 .editor-grid label,

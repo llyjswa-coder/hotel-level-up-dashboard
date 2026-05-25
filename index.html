@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-title" content="刷房看板" />
     <title>酒店积分看板</title>
     <link rel="manifest" href="./manifest.webmanifest" />
-    <link rel="stylesheet" href="./styles.css?v=20260525-4" />
+    <link rel="stylesheet" href="./styles.css?v=20260525-5" />
   </head>
   <body>
     <div class="app-shell">
@@ -73,7 +73,7 @@
                   <h3>万豪</h3>
                 </div>
               </div>
-              <span class="status-pill" id="marriottStatus">未设置</span>
+              <button class="status-pill status-button" type="button" id="marriottStatus" data-open-member-settings>未设置</button>
             </div>
 
             <div class="program-body">
@@ -107,7 +107,7 @@
                   <h3>凯悦</h3>
                 </div>
               </div>
-              <span class="status-pill" id="hyattStatus">未设置</span>
+              <button class="status-pill status-button" type="button" id="hyattStatus" data-open-member-settings>未设置</button>
             </div>
 
             <div class="program-body">
@@ -279,6 +279,51 @@
       </form>
     </dialog>
 
-    <script src="./app.js?v=20260525-4"></script>
+    <dialog class="stay-dialog" id="memberDialog">
+      <form class="stay-editor" id="memberSettingsForm" method="dialog">
+        <div class="dialog-head">
+          <div>
+            <p class="panel-label">会员设置</p>
+            <h3>当前会员等级</h3>
+          </div>
+          <button class="icon-button" type="button" id="closeMemberDialog" aria-label="关闭">×</button>
+        </div>
+
+        <div class="editor-grid compact-editor-grid">
+          <label>
+            万豪等级
+            <select name="marriottLevel">
+              <option value="未设置">未设置</option>
+              <option value="会员">会员</option>
+              <option value="银卡">银卡</option>
+              <option value="金卡">金卡</option>
+              <option value="白金卡">白金卡</option>
+              <option value="钛金卡">钛金卡</option>
+              <option value="大使">大使</option>
+            </select>
+          </label>
+          <label>
+            凯悦等级
+            <select name="hyattLevel">
+              <option value="未设置">未设置</option>
+              <option value="会员">会员</option>
+              <option value="探索者">探索者</option>
+              <option value="冒险家">冒险家</option>
+              <option value="环球客">环球客</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="dialog-actions">
+          <span></span>
+          <div>
+            <button class="ghost-button" type="button" id="cancelMemberSettings">取消</button>
+            <button class="primary-button" type="submit">保存</button>
+          </div>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./app.js?v=20260525-5"></script>
   </body>
 </html>
