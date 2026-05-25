@@ -795,6 +795,110 @@ function renderBrandOptions() {
     .join("");
 }
 
+function buildNotionBackup() {
+  const generatedAt = new Date().toLocaleString("zh-CN", { hour12: false });
+  const marriott = aggregate("marriott");
+  const hyatt = aggregate("hyatt");
+  const completed = completedBrandKeys();
+  const stays = [...state.stays].sort((a, b) => String(a.date || a.checkIn).localeCompare(String(b.date || b.checkIn)));
+
+  const summaryRows = [
+    ["万豪", goals.marriott.level, `${marriott.nights} / ${goals.marriott.target}`, moneyFormatter.format(marriott.cost), formatter.format(marriott.points)],
+    ["凯悦", goals.hyatt.level, `${hyatt.nights} / ${goals.hyatt.target}`, moneyFormatter.format(hyatt.cost), formatter.format(hyatt.points)],
+  ];
+
+  const stayRows = stays.map((stay) => [
+    stay.date || stay.checkIn || "",
+    goals[stay.program]?.label || stay.program || "",
+    stay.city || "",
+    safeCanonicalBrand(stay.program, stay.brand) || stay.brand || "",
+    statusLabel[normalizeStatus(stay.status)] || stay.status || "",
+    moneyFormatter.format(Number(stay.cost || 0)),
+    formatter.format(Number(stay.points || 0)),
+    String(stay.photos?.length || 0),
+    stay.note || "",
+  ]);
+
+  const brandRows = ["marriott", "hyatt"].map((program) => {
+    const brands = brandCatalog[program].filter((brand) => completed.has(brandKey(program, brand)));
+    return `## ${goals[program].label}已点亮品牌\n${brands.length ? brands.map((brand) => `- ${brand}`).join("\n") : "- 暂无"}`;
+  });
+  const portableStays = state.stays.map((stay) => ({
+    ...stay,
+    photos: stay.photos?.length ? `${stay.photos.length} 张本地图片，未写入 Notion 备份正文` : [],
+  }));
+
+  return [
+    `# 酒店刷房看板备份`,
+    "",
+    `生成时间：${generatedAt}`,
+    `会员年度：${activeYear}`,
+    "",
+    "## 进度总览",
+    markdownTable(["酒店集团", "当前等级", "年度房晚", "已花费", "已入账积分"], summaryRows),
+    "",
+    "## 房晚明细",
+    stays.length
+      ? markdownTable(["日期", "集团", "城市", "品牌", "状态", "花费", "积分", "照片数", "日志"], stayRows)
+      : "暂无房晚记录",
+    "",
+    ...brandRows.flatMap((section) => [section, ""]),
+    "## 原始数据备份",
+    "```json",
+    JSON.stringify({ activeYear, stays: portableStays }, null, 2),
+    "```",
+  ].join("\n");
+}
+
+function safeCanonicalBrand(program, brand) {
+  if (!program || !brandCatalog[program]) return "";
+  return canonicalBrand(program, brand);
+}
+
+function markdownTable(headers, rows) {
+  return [
+    `| ${headers.map(markdownCell).join(" | ")} |`,
+    `| ${headers.map(() => "---").join(" | ")} |`,
+    ...rows.map((row) => `| ${row.map(markdownCell).join(" | ")} |`),
+  ].join("\n");
+}
+
+function markdownCell(value) {
+  return String(value ?? "")
+    .replaceAll("\\", "\\\\")
+    .replaceAll("|", "\\|")
+    .replaceAll("\n", "<br>")
+    .trim();
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return true;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.append(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  return copied;
+}
+
+function downloadTextFile(filename, text) {
+  const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 document.querySelectorAll(".filter-button").forEach((button) => {
   button.addEventListener("click", () => {
     document.querySelectorAll(".filter-button").forEach((item) => item.classList.remove("active"));
@@ -873,6 +977,22 @@ document.querySelector("#resetData").addEventListener("click", () => {
   state.stays = [];
   save();
   renderAll();
+});
+
+document.querySelector("#exportNotion").addEventListener("click", async () => {
+  const backup = buildNotionBackup();
+  try {
+    const copied = await copyTextToClipboard(backup);
+    if (copied) {
+      alert("Notion 备份已复制。打开 Notion 新页面后直接粘贴即可。");
+      return;
+    }
+  } catch {
+    // Fall back to a Markdown file when clipboard permission is unavailable.
+  }
+
+  downloadTextFile(`hotel-dashboard-notion-backup-${activeYear}.md`, backup);
+  alert("浏览器没有开放剪贴板权限，已改为下载 Markdown 备份文件，可导入或粘贴到 Notion。");
 });
 
 renderAll();
