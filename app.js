@@ -795,7 +795,7 @@ function renderBrandOptions() {
     .join("");
 }
 
-function buildNotionBackup() {
+function buildNotionBackup({ includePhotos = false } = {}) {
   const generatedAt = new Date().toLocaleString("zh-CN", { hour12: false });
   const marriott = aggregate("marriott");
   const hyatt = aggregate("hyatt");
@@ -815,7 +815,7 @@ function buildNotionBackup() {
     statusLabel[normalizeStatus(stay.status)] || stay.status || "",
     moneyFormatter.format(Number(stay.cost || 0)),
     formatter.format(Number(stay.points || 0)),
-    String(stay.photos?.length || 0),
+    includePhotos ? markdownPhotos(stay) : String(stay.photos?.length || 0),
     stay.note || "",
   ]);
 
@@ -823,10 +823,12 @@ function buildNotionBackup() {
     const brands = brandCatalog[program].filter((brand) => completed.has(brandKey(program, brand)));
     return `## ${goals[program].label}已点亮品牌\n${brands.length ? brands.map((brand) => `- ${brand}`).join("\n") : "- 暂无"}`;
   });
-  const portableStays = state.stays.map((stay) => ({
-    ...stay,
-    photos: stay.photos?.length ? `${stay.photos.length} 张本地图片，未写入 Notion 备份正文` : [],
-  }));
+  const portableStays = includePhotos
+    ? state.stays
+    : state.stays.map((stay) => ({
+        ...stay,
+        photos: stay.photos?.length ? `${stay.photos.length} 张本地图片，未写入 Notion 备份正文` : [],
+      }));
 
   return [
     `# 酒店刷房看板备份`,
@@ -848,6 +850,123 @@ function buildNotionBackup() {
     JSON.stringify({ activeYear, stays: portableStays }, null, 2),
     "```",
   ].join("\n");
+}
+
+function buildNotionHtmlBackup() {
+  const generatedAt = new Date().toLocaleString("zh-CN", { hour12: false });
+  const marriott = aggregate("marriott");
+  const hyatt = aggregate("hyatt");
+  const completed = completedBrandKeys();
+  const stays = [...state.stays].sort((a, b) => String(a.date || a.checkIn).localeCompare(String(b.date || b.checkIn)));
+  const brandSections = ["marriott", "hyatt"]
+    .map((program) => {
+      const brands = brandCatalog[program].filter((brand) => completed.has(brandKey(program, brand)));
+      return `
+        <section>
+          <h2>${escapeHtml(goals[program].label)}已点亮品牌</h2>
+          ${brands.length ? `<ul>${brands.map((brand) => `<li>${escapeHtml(brand)}</li>`).join("")}</ul>` : "<p>暂无</p>"}
+        </section>
+      `;
+    })
+    .join("");
+
+  const stayRows = stays
+    .map(
+      (stay) => `
+        <tr>
+          <td>${escapeHtml(stay.date || stay.checkIn || "")}</td>
+          <td>${escapeHtml(goals[stay.program]?.label || stay.program || "")}</td>
+          <td>${escapeHtml(stay.city || "")}</td>
+          <td>${escapeHtml(safeCanonicalBrand(stay.program, stay.brand) || stay.brand || "")}</td>
+          <td>${escapeHtml(statusLabel[normalizeStatus(stay.status)] || stay.status || "")}</td>
+          <td>${escapeHtml(moneyFormatter.format(Number(stay.cost || 0)))}</td>
+          <td>${escapeHtml(formatter.format(Number(stay.points || 0)))}</td>
+          <td>${htmlPhotos(stay)}</td>
+          <td>${escapeHtml(stay.note || "")}</td>
+        </tr>
+      `,
+    )
+    .join("");
+
+  return `<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>酒店刷房看板备份</title>
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif; color: #1f2430; line-height: 1.5; margin: 32px; }
+      h1, h2 { margin: 0 0 12px; }
+      section { margin: 28px 0; }
+      table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+      th, td { border: 1px solid #d9dde7; padding: 8px; text-align: left; vertical-align: top; }
+      th { background: #f5f7fb; }
+      .photo-grid { display: flex; flex-wrap: wrap; gap: 8px; min-width: 160px; }
+      .photo-grid img { width: 96px; height: 72px; object-fit: cover; border-radius: 6px; border: 1px solid #d9dde7; }
+      pre { white-space: pre-wrap; word-break: break-word; background: #f5f7fb; padding: 12px; border-radius: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>酒店刷房看板备份</h1>
+    <p>生成时间：${escapeHtml(generatedAt)}<br />会员年度：${activeYear}</p>
+
+    <section>
+      <h2>进度总览</h2>
+      <table>
+        <thead><tr><th>酒店集团</th><th>当前等级</th><th>年度房晚</th><th>已花费</th><th>已入账积分</th></tr></thead>
+        <tbody>
+          <tr><td>万豪</td><td>${escapeHtml(goals.marriott.level)}</td><td>${marriott.nights} / ${goals.marriott.target}</td><td>${escapeHtml(moneyFormatter.format(marriott.cost))}</td><td>${escapeHtml(formatter.format(marriott.points))}</td></tr>
+          <tr><td>凯悦</td><td>${escapeHtml(goals.hyatt.level)}</td><td>${hyatt.nights} / ${goals.hyatt.target}</td><td>${escapeHtml(moneyFormatter.format(hyatt.cost))}</td><td>${escapeHtml(formatter.format(hyatt.points))}</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>房晚明细</h2>
+      ${
+        stays.length
+          ? `<table>
+              <thead><tr><th>日期</th><th>集团</th><th>城市</th><th>品牌</th><th>状态</th><th>花费</th><th>积分</th><th>照片</th><th>日志</th></tr></thead>
+              <tbody>${stayRows}</tbody>
+            </table>`
+          : "<p>暂无房晚记录</p>"
+      }
+    </section>
+
+    ${brandSections}
+
+    <section>
+      <h2>原始数据备份</h2>
+      <pre>${escapeHtml(JSON.stringify({ activeYear, stays: state.stays }, null, 2))}</pre>
+    </section>
+  </body>
+</html>`;
+}
+
+function markdownPhotos(stay) {
+  const photos = stay.photos || [];
+  if (!photos.length) return "0";
+  return photos.map((photo, index) => `![照片 ${index + 1}](${photo})`).join("<br>");
+}
+
+function htmlPhotos(stay) {
+  const photos = stay.photos || [];
+  if (!photos.length) return "0";
+  return `<div class="photo-grid">${photos
+    .map((photo, index) => `<img src="${escapeAttribute(photo)}" alt="入住照片 ${index + 1}" />`)
+    .join("")}</div>`;
+}
+
+function escapeAttribute(value) {
+  return String(value).replaceAll("&", "&amp;").replaceAll('"', "&quot;").replaceAll("<", "&lt;");
+}
+
+function hasStayPhotos() {
+  return state.stays.some((stay) => stay.photos?.length);
+}
+
+function backupDateStamp() {
+  const now = new Date();
+  return `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, "0")}${String(now.getDate()).padStart(2, "0")}`;
 }
 
 function safeCanonicalBrand(program, brand) {
@@ -889,8 +1008,8 @@ async function copyTextToClipboard(text) {
   return copied;
 }
 
-function downloadTextFile(filename, text) {
-  const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+function downloadTextFile(filename, text, type = "text/markdown;charset=utf-8") {
+  const blob = new Blob([text], { type });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
@@ -980,6 +1099,18 @@ document.querySelector("#resetData").addEventListener("click", () => {
 });
 
 document.querySelector("#exportNotion").addEventListener("click", async () => {
+  const includesPhotos = hasStayPhotos();
+
+  if (includesPhotos) {
+    downloadTextFile(
+      `hotel-dashboard-notion-photo-backup-${backupDateStamp()}.html`,
+      buildNotionHtmlBackup(),
+      "text/html;charset=utf-8",
+    );
+    alert("已导出包含照片本体的 HTML 备份文件。可在 Notion 里导入这个文件，或打开后复制内容到 Notion。");
+    return;
+  }
+
   const backup = buildNotionBackup();
   try {
     const copied = await copyTextToClipboard(backup);
